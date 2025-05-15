@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Aarya's Family - Monthly Budget Calculator</title>
+  <title>Aarya's Family Budget</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -19,7 +19,7 @@
       max-width: 800px;
       margin: auto;
       padding: 20px;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
@@ -29,7 +29,7 @@
       color: #333;
     }
 
-    label, select, input, button {
+    label, input, select, button {
       display: block;
       width: 100%;
       margin: 10px 0;
@@ -71,71 +71,161 @@
     button:hover {
       background-color: #45a049;
     }
+
+    .hidden {
+      display: none;
+    }
+
+    #logoutBtn {
+      float: right;
+      background-color: #e74c3c;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Aarya's Family</h1>
-    <h2>Monthly Budget Tracker</h2>
+    <!-- Login/Register Section -->
+    <div id="loginSection">
+      <h1>Aarya's Family Budget</h1>
+      <h3>Login or Register</h3>
 
-    <label for="monthSelect">Select Month:</label>
-    <select id="monthSelect">
-      <option value="January">January</option>
-      <option value="February">February</option>
-      <option value="March">March</option>
-      <option value="April">April</option>
-      <option value="May">May</option>
-      <option value="June">June</option>
-      <option value="July">July</option>
-      <option value="August">August</option>
-      <option value="September">September</option>
-      <option value="October">October</option>
-      <option value="November">November</option>
-      <option value="December">December</option>
-    </select>
+      <label for="loginUsername">Username:</label>
+      <input type="text" id="loginUsername" placeholder="e.g. Rahul" />
 
-    <label for="day">Enter Day (1–31):</label>
-    <input type="number" id="day" min="1" max="31" placeholder="e.g. 15" />
+      <label for="loginPassword">Password:</label>
+      <input type="password" id="loginPassword" placeholder="Enter password" />
 
-    <label for="amount">Enter Expense Amount (₹):</label>
-    <input type="number" id="amount" placeholder="e.g. 200" />
-
-    <button onclick="addExpense()">Add Expense</button>
-
-    <div class="total">
-      <strong>Total for Month:</strong> ₹<span id="monthlyTotal">0</span>
+      <button onclick="login()">Login</button>
+      <button onclick="register()">Register</button>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Month</th>
-          <th>Day</th>
-          <th>Expenses (₹)</th>
-        </tr>
-      </thead>
-      <tbody id="expenseTableBody"></tbody>
-    </table>
+    <!-- Budget Tracker Section -->
+    <div id="budgetSection" class="hidden">
+      <h2>Welcome, <span id="userDisplay"></span></h2>
+      <button id="logoutBtn" onclick="logout()">Logout</button>
+
+      <label for="monthSelect">Select Month:</label>
+      <select id="monthSelect">
+        <option value="January">January</option>
+        <option value="February">February</option>
+        <option value="March">March</option>
+        <option value="April">April</option>
+        <option value="May">May</option>
+        <option value="June">June</option>
+        <option value="July">July</option>
+        <option value="August">August</option>
+        <option value="September">September</option>
+        <option value="October">October</option>
+        <option value="November">November</option>
+        <option value="December">December</option>
+      </select>
+
+      <label for="day">Enter Day (1–31):</label>
+      <input type="number" id="day" min="1" max="31" placeholder="e.g. 15" />
+
+      <label for="amount">Enter Expense Amount (₹):</label>
+      <input type="number" id="amount" placeholder="e.g. 200" />
+
+      <button onclick="addExpense()">Add Expense</button>
+
+      <div class="total">
+        <strong>Total for Month:</strong> ₹<span id="monthlyTotal">0</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Day</th>
+            <th>Expenses (₹)</th>
+          </tr>
+        </thead>
+        <tbody id="expenseTableBody"></tbody>
+      </table>
+    </div>
   </div>
 
   <script>
+    let currentUser = "";
     let data = {};
 
+    function saveUsers(users) {
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem("users")) || {};
+    }
+
+    function register() {
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      if (!username || !password) {
+        alert("Please enter both username and password.");
+        return;
+      }
+
+      const users = getUsers();
+
+      if (users[username]) {
+        alert("Username already exists. Try logging in.");
+        return;
+      }
+
+      users[username] = { password };
+      saveUsers(users);
+
+      alert("Registration successful! You can now log in.");
+    }
+
+    function login() {
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      const users = getUsers();
+
+      if (!users[username] || users[username].password !== password) {
+        alert("Invalid username or password.");
+        return;
+      }
+
+      currentUser = username;
+      sessionStorage.setItem("currentUser", username);
+      document.getElementById("userDisplay").innerText = username;
+
+      showBudgetSection();
+      loadData();
+      updateTable();
+    }
+
+    function logout() {
+      sessionStorage.removeItem("currentUser");
+      location.reload();
+    }
+
+    function showBudgetSection() {
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("budgetSection").classList.remove("hidden");
+    }
+
     function loadData() {
-      const savedData = localStorage.getItem("budgetData");
-      if (savedData) {
-        data = JSON.parse(savedData);
+      const saved = localStorage.getItem("budget_" + currentUser);
+      if (saved) {
+        data = JSON.parse(saved);
+      } else {
+        data = {};
       }
     }
 
     function saveData() {
-      localStorage.setItem("budgetData", JSON.stringify(data));
+      localStorage.setItem("budget_" + currentUser, JSON.stringify(data));
     }
 
     function addExpense() {
-      const month = document.getElementById('monthSelect').value;
-      const day = document.getElementById('day').value;
-      const amount = parseFloat(document.getElementById('amount').value);
+      const month = document.getElementById("monthSelect").value;
+      const day = document.getElementById("day").value;
+      const amount = parseFloat(document.getElementById("amount").value);
 
       if (!day || isNaN(amount) || amount <= 0) {
         alert("Please enter a valid day and amount.");
@@ -147,36 +237,45 @@
 
       data[month][day] += amount;
 
-      document.getElementById('amount').value = '';
-      document.getElementById('day').value = '';
+      document.getElementById("amount").value = "";
+      document.getElementById("day").value = "";
 
       saveData();
       updateTable();
     }
 
     function updateTable() {
-      const month = document.getElementById('monthSelect').value;
-      const tbody = document.getElementById('expenseTableBody');
-      tbody.innerHTML = '';
+      const month = document.getElementById("monthSelect").value;
+      const tbody = document.getElementById("expenseTableBody");
+      tbody.innerHTML = "";
 
       let total = 0;
       if (data[month]) {
-        const days = Object.keys(data[month]).sort((a, b) => a - b);
-        days.forEach(day => {
+        Object.keys(data[month]).sort((a, b) => a - b).forEach(day => {
           const amount = data[month][day];
           total += amount;
-          const row = `<tr><td>${month}</td><td>${day}</td><td>₹${amount.toFixed(2)}</td></tr>`;
-          tbody.innerHTML += row;
+          tbody.innerHTML += `<tr><td>${month}</td><td>${day}</td><td>₹${amount.toFixed(2)}</td></tr>`;
         });
       }
 
-      document.getElementById('monthlyTotal').textContent = total.toFixed(2);
+      document.getElementById("monthlyTotal").textContent = total.toFixed(2);
     }
 
-    document.getElementById('monthSelect').addEventListener('change', updateTable);
+    // Check session
+    window.onload = function () {
+      const user = sessionStorage.getItem("currentUser");
+      if (user) {
+        currentUser = user;
+        document.getElementById("userDisplay").innerText = user;
+        showBudgetSection();
+        loadData();
+        updateTable();
+      }
+    };
 
-    loadData();
-    updateTable();
+    document.getElementById("monthSelect").addEventListener("change", updateTable);
   </script>
 </body>
 </html>
+
+
