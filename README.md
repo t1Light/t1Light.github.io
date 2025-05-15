@@ -8,8 +8,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 40px;
-      background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c
-');
+      background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c');
       background-size: cover;
       background-repeat: no-repeat;
       background-attachment: fixed;
@@ -17,10 +16,10 @@
     }
 
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
       padding: 20px;
-      background: rgba(255, 255, 255, 0.9); /* Transparent white */
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
@@ -110,6 +109,7 @@
     <table>
       <thead>
         <tr>
+          <th>Month</th>
           <th>Day</th>
           <th>Expenses (₹)</th>
         </tr>
@@ -121,7 +121,6 @@
   <script>
     let data = {};
 
-    // Load saved data from localStorage
     function loadData() {
       const savedData = localStorage.getItem("budgetData");
       if (savedData) {
@@ -148,7 +147,6 @@
 
       data[month][day] += amount;
 
-      // Clear inputs
       document.getElementById('amount').value = '';
       document.getElementById('day').value = '';
 
@@ -167,7 +165,7 @@
         days.forEach(day => {
           const amount = data[month][day];
           total += amount;
-          const row = `<tr><td>${day}</td><td>₹${amount.toFixed(2)}</td></tr>`;
+          const row = `<tr><td>${month}</td><td>${day}</td><td>₹${amount.toFixed(2)}</td></tr>`;
           tbody.innerHTML += row;
         });
       }
@@ -177,7 +175,6 @@
 
     document.getElementById('monthSelect').addEventListener('change', updateTable);
 
-    // Initialize on page load
     loadData();
     updateTable();
   </script>
