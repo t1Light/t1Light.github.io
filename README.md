@@ -3,25 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <title>Aarya's Family Budget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 40px;
-      background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c');
+      padding: 0;
+      background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') no-repeat center center fixed;
       background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-position: center;
     }
 
     .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
+      max-width: 900px;
+      margin: 50px auto;
       background: rgba(255, 255, 255, 0.95);
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     }
 
     h1, h2 {
@@ -29,56 +31,82 @@
       color: #333;
     }
 
-    label, input, select, button {
-      display: block;
+    input, select, button {
       width: 100%;
-      margin: 10px 0;
-      padding: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 20px;
       font-size: 16px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
       border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
-      background-color: #fff;
+      border-radius: 8px;
+      transition: border 0.3s;
     }
 
-    th {
-      background-color: #f0f0f0;
-    }
-
-    .total {
-      margin-top: 15px;
-      font-size: 18px;
-      text-align: right;
-      color: #444;
+    input:focus, select:focus {
+      border-color: #4CAF50;
+      outline: none;
     }
 
     button {
       background-color: #4CAF50;
       color: white;
-      border: none;
+      font-weight: 600;
       cursor: pointer;
+      transition: background 0.3s;
     }
 
     button:hover {
-      background-color: #45a049;
+      background-color: #3e9c44;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      font-weight: 600;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 18px;
+      color: #222;
+      margin-top: 10px;
+    }
+
+    #logoutBtn {
+      background-color: #e74c3c;
+      margin-top: -10px;
     }
 
     .hidden {
       display: none;
     }
 
-    #logoutBtn {
-      float: right;
-      background-color: #e74c3c;
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      table, th, td {
+        font-size: 14px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
@@ -86,25 +114,25 @@
   <div class="container">
     <!-- Login/Register Section -->
     <div id="loginSection">
-      <h1>Aarya's Family Budget</h1>
-      <h3>Login or Register</h3>
+      <h1>🔐 Aarya's Family Budget</h1>
+      <h3 style="text-align:center;">Login or Register to Begin</h3>
 
-      <label for="loginUsername">Username:</label>
-      <input type="text" id="loginUsername" placeholder="e.g. Rahul" />
+      <label for="loginUsername">Username</label>
+      <input type="text" id="loginUsername" placeholder="e.g. aarya123" />
 
-      <label for="loginPassword">Password:</label>
+      <label for="loginPassword">Password</label>
       <input type="password" id="loginPassword" placeholder="Enter password" />
 
       <button onclick="login()">Login</button>
       <button onclick="register()">Register</button>
     </div>
 
-    <!-- Budget Tracker Section -->
+    <!-- Budget Section -->
     <div id="budgetSection" class="hidden">
       <h2>Welcome, <span id="userDisplay"></span></h2>
       <button id="logoutBtn" onclick="logout()">Logout</button>
 
-      <label for="monthSelect">Select Month:</label>
+      <label for="monthSelect">Select Month</label>
       <select id="monthSelect">
         <option value="January">January</option>
         <option value="February">February</option>
@@ -120,16 +148,16 @@
         <option value="December">December</option>
       </select>
 
-      <label for="day">Enter Day (1–31):</label>
-      <input type="number" id="day" min="1" max="31" placeholder="e.g. 15" />
+      <label for="day">Enter Day (1–31)</label>
+      <input type="number" id="day" min="1" max="31" placeholder="e.g. 5" />
 
-      <label for="amount">Enter Expense Amount (₹):</label>
+      <label for="amount">Enter Expense Amount (₹)</label>
       <input type="number" id="amount" placeholder="e.g. 200" />
 
       <button onclick="addExpense()">Add Expense</button>
 
       <div class="total">
-        <strong>Total for Month:</strong> ₹<span id="monthlyTotal">0</span>
+        <strong>Total This Month:</strong> ₹<span id="monthlyTotal">0</span>
       </div>
 
       <table>
@@ -137,7 +165,7 @@
           <tr>
             <th>Month</th>
             <th>Day</th>
-            <th>Expenses (₹)</th>
+            <th>Expense (₹)</th>
           </tr>
         </thead>
         <tbody id="expenseTableBody"></tbody>
@@ -169,14 +197,14 @@
       const users = getUsers();
 
       if (users[username]) {
-        alert("Username already exists. Try logging in.");
+        alert("Username already exists.");
         return;
       }
 
       users[username] = { password };
       saveUsers(users);
 
-      alert("Registration successful! You can now log in.");
+      alert("Registered! Please login now.");
     }
 
     function login() {
@@ -186,7 +214,7 @@
       const users = getUsers();
 
       if (!users[username] || users[username].password !== password) {
-        alert("Invalid username or password.");
+        alert("Wrong username or password.");
         return;
       }
 
@@ -211,11 +239,7 @@
 
     function loadData() {
       const saved = localStorage.getItem("budget_" + currentUser);
-      if (saved) {
-        data = JSON.parse(saved);
-      } else {
-        data = {};
-      }
+      data = saved ? JSON.parse(saved) : {};
     }
 
     function saveData() {
@@ -228,7 +252,7 @@
       const amount = parseFloat(document.getElementById("amount").value);
 
       if (!day || isNaN(amount) || amount <= 0) {
-        alert("Please enter a valid day and amount.");
+        alert("Enter valid day and amount.");
         return;
       }
 
@@ -261,8 +285,8 @@
       document.getElementById("monthlyTotal").textContent = total.toFixed(2);
     }
 
-    // Check session
-    window.onload = function () {
+    // Load session
+    window.onload = () => {
       const user = sessionStorage.getItem("currentUser");
       if (user) {
         currentUser = user;
@@ -277,5 +301,6 @@
   </script>
 </body>
 </html>
+
 
 
