@@ -100,7 +100,19 @@
   </div>
 
   <script>
-    let data = {};  // { January: { '1': 300, '2': 500 }, February: {...} }
+    let data = {};
+
+    // Load saved data from localStorage
+    function loadData() {
+      const savedData = localStorage.getItem("budgetData");
+      if (savedData) {
+        data = JSON.parse(savedData);
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem("budgetData", JSON.stringify(data));
+    }
 
     function addExpense() {
       const month = document.getElementById('monthSelect').value;
@@ -108,7 +120,7 @@
       const amount = parseFloat(document.getElementById('amount').value);
 
       if (!day || isNaN(amount) || amount <= 0) {
-        alert("Please enter valid day and amount.");
+        alert("Please enter a valid day and amount.");
         return;
       }
 
@@ -117,8 +129,11 @@
 
       data[month][day] += amount;
 
+      // Clear inputs
       document.getElementById('amount').value = '';
       document.getElementById('day').value = '';
+
+      saveData();
       updateTable();
     }
 
@@ -129,7 +144,8 @@
 
       let total = 0;
       if (data[month]) {
-        Object.keys(data[month]).sort((a,b)=>a-b).forEach(day => {
+        const days = Object.keys(data[month]).sort((a,b) => a - b);
+        days.forEach(day => {
           const amount = data[month][day];
           total += amount;
           const row = `<tr><td>${day}</td><td>₹${amount.toFixed(2)}</td></tr>`;
@@ -141,6 +157,10 @@
     }
 
     document.getElementById('monthSelect').addEventListener('change', updateTable);
+
+    // Initialize on page load
+    loadData();
+    updateTable();
   </script>
 </body>
 </html>
