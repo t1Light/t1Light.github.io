@@ -112,6 +112,7 @@
 </head>
 <body>
   <div class="container">
+    <!-- Login/Register Section -->
     <div id="loginSection">
       <h1>🔐 Aarya's Family Budget</h1>
       <h3 style="text-align:center;">Login or Register to Begin</h3>
@@ -126,6 +127,7 @@
       <button onclick="register()">Register</button>
     </div>
 
+    <!-- Budget Section -->
     <div id="budgetSection" class="hidden">
       <h2>Welcome, <span id="userDisplay"></span></h2>
       <button id="logoutBtn" onclick="logout()">Logout</button>
@@ -152,9 +154,6 @@
       <label for="amount">Enter Expense Amount (₹)</label>
       <input type="number" id="amount" placeholder="e.g. 200" />
 
-      <label for="description">Description (What was the money spent on?)</label>
-      <input type="text" id="description" placeholder="e.g. Groceries, Petrol, Books" />
-
       <button onclick="addExpense()">Add Expense</button>
 
       <div class="total">
@@ -167,7 +166,6 @@
             <th>Month</th>
             <th>Day</th>
             <th>Expense (₹)</th>
-            <th>Description</th>
           </tr>
         </thead>
         <tbody id="expenseTableBody"></tbody>
@@ -221,7 +219,7 @@
       }
 
       currentUser = username;
-      localStorage.setItem("currentUser", username);
+      localStorage.setItem("currentUser", username); // Persistent login
       document.getElementById("userDisplay").innerText = username;
 
       showBudgetSection();
@@ -252,21 +250,19 @@
       const month = document.getElementById("monthSelect").value;
       const day = document.getElementById("day").value;
       const amount = parseFloat(document.getElementById("amount").value);
-      const description = document.getElementById("description").value.trim();
 
-      if (!day || isNaN(amount) || amount <= 0 || !description) {
-        alert("Please enter valid day, amount and description.");
+      if (!day || isNaN(amount) || amount <= 0) {
+        alert("Enter valid day and amount.");
         return;
       }
 
       if (!data[month]) data[month] = {};
-      if (!data[month][day]) data[month][day] = [];
+      if (!data[month][day]) data[month][day] = 0;
 
-      data[month][day].push({ amount, description });
+      data[month][day] += amount;
 
       document.getElementById("amount").value = "";
       document.getElementById("day").value = "";
-      document.getElementById("description").value = "";
 
       saveData();
       updateTable();
@@ -280,16 +276,9 @@
       let total = 0;
       if (data[month]) {
         Object.keys(data[month]).sort((a, b) => a - b).forEach(day => {
-          data[month][day].forEach(entry => {
-            total += entry.amount;
-            tbody.innerHTML += `
-              <tr>
-                <td>${month}</td>
-                <td>${day}</td>
-                <td>₹${entry.amount.toFixed(2)}</td>
-                <td>${entry.description}</td>
-              </tr>`;
-          });
+          const amount = data[month][day];
+          total += amount;
+          tbody.innerHTML += `<tr><td>${month}</td><td>${day}</td><td>₹${amount.toFixed(2)}</td></tr>`;
         });
       }
 
