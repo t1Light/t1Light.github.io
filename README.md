@@ -219,7 +219,7 @@
       }
 
       currentUser = username;
-      sessionStorage.setItem("currentUser", username);
+      localStorage.setItem("currentUser", username); // Persistent login
       document.getElementById("userDisplay").innerText = username;
 
       showBudgetSection();
@@ -228,7 +228,7 @@
     }
 
     function logout() {
-      sessionStorage.removeItem("currentUser");
+      localStorage.removeItem("currentUser");
       location.reload();
     }
 
@@ -285,9 +285,8 @@
       document.getElementById("monthlyTotal").textContent = total.toFixed(2);
     }
 
-    // Load session
     window.onload = () => {
-      const user = sessionStorage.getItem("currentUser");
+      const user = localStorage.getItem("currentUser");
       if (user) {
         currentUser = user;
         document.getElementById("userDisplay").innerText = user;
@@ -301,6 +300,3 @@
   </script>
 </body>
 </html>
-
-
-
