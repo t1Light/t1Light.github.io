@@ -112,7 +112,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Login/Register Section -->
     <div id="loginSection">
       <h1>🔐 Aarya's Family Budget</h1>
       <h3 style="text-align:center;">Login or Register to Begin</h3>
@@ -127,7 +126,6 @@
       <button onclick="register()">Register</button>
     </div>
 
-    <!-- Budget Section -->
     <div id="budgetSection" class="hidden">
       <h2>Welcome, <span id="userDisplay"></span></h2>
       <button id="logoutBtn" onclick="logout()">Logout</button>
