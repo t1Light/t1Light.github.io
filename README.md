@@ -6,17 +6,23 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f8f8f8;
+      margin: 0;
+      padding: 40px;
+      background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c
+');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
     }
 
     .container {
       max-width: 700px;
       margin: auto;
       padding: 20px;
-      background: white;
+      background: rgba(255, 255, 255, 0.9); /* Transparent white */
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
 
     h1, h2 {
@@ -29,6 +35,7 @@
       width: 100%;
       margin: 10px 0;
       padding: 10px;
+      font-size: 16px;
     }
 
     table {
@@ -41,6 +48,7 @@
       border: 1px solid #ccc;
       padding: 10px;
       text-align: center;
+      background-color: #fff;
     }
 
     th {
@@ -52,6 +60,17 @@
       font-size: 18px;
       text-align: right;
       color: #444;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
@@ -144,7 +163,7 @@
 
       let total = 0;
       if (data[month]) {
-        const days = Object.keys(data[month]).sort((a,b) => a - b);
+        const days = Object.keys(data[month]).sort((a, b) => a - b);
         days.forEach(day => {
           const amount = data[month][day];
           total += amount;
